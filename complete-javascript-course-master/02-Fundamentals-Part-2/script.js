@@ -209,7 +209,7 @@ const sonya2 = {
     return `${this.firstName} is a ${this.calcAge()}-year-old ${this.job}, and she has ${
       this.hasDriversLicense ? "a" : "no"
     } driver's license.`;
-  }
+  },
 };
 
 console.log(sonya2.calcAge());
@@ -218,59 +218,60 @@ console.log(sonya2["calcAge"]());
 console.log(sonya2.age);
 console.log(sonya2.getSummary());
 
-
 // Exercise
 /* Write your code below. Good luck! 🙂 */
 
-
 const mark = {
-    fullName: 'Mark Miller',
-    mass: 78,
-    height: 1.69,
-    calcBMI: function () {
-        this.bmi = this.mass / (this.height * this.height)
-        return this.bmi
-    }
-}
+  fullName: "Mark Miller",
+  mass: 78,
+  height: 1.69,
+  calcBMI: function () {
+    this.bmi = this.mass / (this.height * this.height);
+    return this.bmi;
+  },
+};
 
- const john = {
-     fullName: 'John Smith',
-     mass:92,
-     height:1.95,
-     calcBMI: function () {
-        this.bmi = this.mass / (this.height * this.height)
-        return this.bmi
-    }
- }
- 
+const john = {
+  fullName: "John Smith",
+  mass: 92,
+  height: 1.95,
+  calcBMI: function () {
+    this.bmi = this.mass / (this.height * this.height);
+    return this.bmi;
+  },
+};
+
 const markBMI = mark.calcBMI();
 const johnBMI = john.calcBMI();
 
-if(johnBMI > markBMI){
-    console.log(`John Smith's BMI (${john.bmi}) is higher than Mark Miller's (${mark.bmi})!`)
-}else{
-     console.log(`Mark Miller's BMI (${mark.bmi}) is higher thanJohn Smith's (${john.bmi})!`)
+if (johnBMI > markBMI) {
+  console.log(
+    `John Smith's BMI (${john.bmi}) is higher than Mark Miller's (${mark.bmi})!`,
+  );
+} else {
+  console.log(
+    `Mark Miller's BMI (${mark.bmi}) is higher thanJohn Smith's (${john.bmi})!`,
+  );
 }
 
-
-for(let rep = 1; rep <= 10; rep++){
-    console.log(`Lifting weights repetition ${rep} 🏋️‍♀️`);
+for (let rep = 1; rep <= 10; rep++) {
+  console.log(`Lifting weights repetition ${rep} 🏋️‍♀️`);
 }
 
 const sonyaArray2 = [
-    'Sonya',
-    'Smith',
-    2026 - 1991,
-    'teacher',
-    ['Michael', 'Steven', 'Peter']
-]
+  "Sonya",
+  "Smith",
+  2026 - 1991,
+  "teacher",
+  ["Michael", "Steven", "Peter"],
+];
 
 const types = [];
 
-for(let i = 0; i < sonyaArray2.length; i++){
-    console.log(sonyaArray2[i], typeof sonyaArray2[i]);
-    // types[i] = typeof sonyaArray2[i];
-    types.push(typeof sonyaArray2[i]);
+for (let i = 0; i < sonyaArray2.length; i++) {
+  console.log(sonyaArray2[i], typeof sonyaArray2[i]);
+  // types[i] = typeof sonyaArray2[i];
+  types.push(typeof sonyaArray2[i]);
 }
 
 console.log(types);
@@ -278,74 +279,72 @@ console.log(types);
 const years2 = [1991, 2007, 1969, 2020];
 const ages2 = [];
 
-for(let i = 0; i < years2.length; i++){
-    ages2.push(2026 - years2[i]);
+for (let i = 0; i < years2.length; i++) {
+  ages2.push(2026 - years2[i]);
 }
 
 console.log(ages2);
 
-console.log('--- ONLY STRINGS ---');
-for(let i = 0; i < sonyaArray2.length; i++){
-    if(typeof sonyaArray2[i] !== 'string') continue;
-    console.log(sonyaArray2[i], typeof sonyaArray2[i]);
+console.log("--- ONLY STRINGS ---");
+for (let i = 0; i < sonyaArray2.length; i++) {
+  if (typeof sonyaArray2[i] !== "string") continue;
+  console.log(sonyaArray2[i], typeof sonyaArray2[i]);
 }
 
-console.log('--- BREAK WITH NUMBER ---');
-for(let i = 0; i < sonyaArray2.length; i++){
-    if(typeof sonyaArray2[i] === 'number') break;
-    console.log(sonyaArray2[i], typeof sonyaArray2[i]);
+console.log("--- BREAK WITH NUMBER ---");
+for (let i = 0; i < sonyaArray2.length; i++) {
+  if (typeof sonyaArray2[i] === "number") break;
+  console.log(sonyaArray2[i], typeof sonyaArray2[i]);
 }
 
-for(let i = sonyaArray2.length - 1; i >= 0; i--){
-    console.log(i, sonyaArray2[i]);
+for (let i = sonyaArray2.length - 1; i >= 0; i--) {
+  console.log(i, sonyaArray2[i]);
 }
 
-for(let exercise = 1; exercise <= 3; exercise++){
-    console.log(`--- Starting exercise ${exercise} ---`);
-    for(let rep = 1; rep <= 5; rep++){
-        console.log(`Exercise ${exercise}: Lifting weights repetition ${rep} 🏋️‍♀️`);
-    }
+for (let exercise = 1; exercise <= 3; exercise++) {
+  console.log(`--- Starting exercise ${exercise} ---`);
+  for (let rep = 1; rep <= 5; rep++) {
+    console.log(`Exercise ${exercise}: Lifting weights repetition ${rep} 🏋️‍♀️`);
+  }
 }
 
 let rep = 1;
-while(rep <= 10){
-    console.log(`Lifting weights repetition ${rep} 🏋️‍♀️`);
-    rep++;
+while (rep <= 10) {
+  console.log(`Lifting weights repetition ${rep} 🏋️‍♀️`);
+  rep++;
 }
 
 let dice = Math.trunc(Math.random() * 6) + 1;
 
-while(dice !== 6){
-    console.log(`You rolled a ${dice}`);
-    dice = Math.trunc(Math.random() * 6) + 1;
-    if(dice === 6) console.log('Loop is about to end...');
+while (dice !== 6) {
+  console.log(`You rolled a ${dice}`);
+  dice = Math.trunc(Math.random() * 6) + 1;
+  if (dice === 6) console.log("Loop is about to end...");
 }
-
 
 // Code Challenge #4
 const calcTip = function (bill) {
   return bill >= 50 && bill <= 300 ? bill * 0.15 : bill * 0.2;
-}
+};
 
 /* Write your code below. Good luck! 🙂 */
 
-const bills = [ 22, 295, 176, 440, 37, 105, 10, 1100, 86, 52]
-const tips = []
+const bills = [22, 295, 176, 440, 37, 105, 10, 1100, 86, 52];
+const tips = [];
 const totals = [];
 
-for(let i = 0; i<= bills.length; i++){
-    tips.push(calcTip(bills[i]));
-    totals.push(tips[i] + bills[i]);
+for (let i = 0; i <= bills.length; i++) {
+  tips.push(calcTip(bills[i]));
+  totals.push(tips[i] + bills[i]);
 }
-
 
 const calcAverage = (arr) => {
-    let sum = 0;
-    for(let i = 0; i < arr.length; i++){
-        sum += arr[i];
-    }
-    
-    return sum / arr.length
-}
+  let sum = 0;
+  for (let i = 0; i < arr.length; i++) {
+    sum += arr[i];
+  }
 
-calcAverage(totals)
+  return sum / arr.length;
+};
+
+calcAverage(totals);
