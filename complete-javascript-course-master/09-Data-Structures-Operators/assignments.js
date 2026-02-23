@@ -308,3 +308,87 @@ for (let i = 0; i < books.length; i++) {
   books[i].onlineContent ??
     console.log(`${books[i].title} provides no data about its online content`);
 }
+
+// Logical Assignments Operators
+for (let i = 0; i < books.length; i++) {
+  books[i].edition ||= 1;
+}
+
+for (let i = 0; i < books.length; i++) {
+  books[i].highlighted &&= !(books[i].thirdParty.goodreads.rating < 4.2);
+}
+
+// Looping Arrays: The for-of Loop
+let pageSum = 0;
+
+for (const book of books) {
+  pageSum += book.pages;
+}
+
+const allAuthors = [];
+
+for (const book of books) {
+  if (typeof book.author === 'string') {
+    allAuthors.push(book.author);
+  } else {
+    allAuthors.push(...book.author);
+  }
+}
+
+for (const authorEntry of allAuthors.entries()) {
+  console.log(`${authorEntry[0] + 1} ${authorEntry[1]}`);
+}
+
+for (const [idx, authorName] of allAuthors.entries()) {
+  console.log(`${idx + 1} ${authorName}`);
+}
+
+// Enhanced Object Literals
+const bookData = [
+  ['title', 'Computer Networking: A Top-Down Approach'],
+  ['author', ['James F. Kurose', 'Keith W. Ross']],
+  ['publisher', 'Addison Wesley'],
+];
+
+// Do the rest
+const newBook = {
+  [bookData[0][0]]: bookData[0][1],
+  [bookData[1][0]]: bookData[1][1],
+  [bookData[2][0]]: bookData[2][1],
+};
+
+const pages = 880;
+
+// Add pages to new book 2 the modern way
+const newBook2 = {
+  title: 'The C Programming Language',
+  author: ['Brian W. Kernighan', 'Dennis M. Ritchie'],
+  pages,
+};
+
+// Optional Chaining (?.)
+const getFirstKeyword = book => {
+  return book.keywords?.[0];
+};
+
+getFirstKeyword(books[0]);
+
+// Looping Objects: Object Keys, Values and Entries
+const entries = [];
+
+for (const key of Object.keys(books[0].thirdParty.goodreads)) {
+  entries.push([key]);
+}
+
+console.log(Object.entries(books[0].thirdParty.goodreads));
+
+// for(Object.values((books[0].thirdParty.goodreads))
+for (const [index, value] of Object.values(
+  books[0].thirdParty.goodreads,
+).entries()) {
+  entries[index].push(value);
+}
+
+const entries2 = Object.entries(books[0].thirdParty.goodreads);
+console.log({entries})
+console.log({entries2})

@@ -39,6 +39,8 @@ const game = {
   },
 };
 
+console.log('----- CHALLENGE 1 -----');
+
 // 1. Create one player array for each team (players1 and players2)
 
 const [players1, players2] = game.players;
@@ -71,6 +73,37 @@ const printGoals = (...playerNames) => {
 printGoals(...game.scored);
 printGoals('Muller', 'Davis');
 
-team1 < team2 && console.log("Team 1 is more likely to win")
-team2 < team1 && console.log("Team 2 is more likely to win")
-team1 === team2 && console.log("Draw between teams")
+team1 < team2 && console.log('Team 1 is more likely to win');
+team2 < team1 && console.log('Team 2 is more likely to win');
+team1 === team2 && console.log('Draw between teams');
+
+// CHALLENGE 2
+
+console.log('----- CHALLENGE 2 -----');
+// 1. Loop over the game.scored array and print each player name to the console, along with the goal number
+// (e.g. "Goal 1: Lewandowski")
+
+for (const [idx, player] of game.scored.entries()) {
+  console.log(`Goal ${idx + 1}: ${player}`);
+}
+
+// 2. Use a loop to calculate the average odd and log it to the console
+let total = 0;
+for (const odd of Object.values(game.odds)) {
+  total += odd;
+}
+console.log({ total });
+const avgOdd = total / Object.values(game.odds).length;
+console.log({ avgOdd });
+
+// 3. Print the 3 odds to the console but in a nice formatted way, exactly like this:
+// Odd of victory Bayern Munich: 1.33
+// Odd of draw: 3.25
+// Odd of vicotry Borrussia Dortmund: 6.5
+
+console.log(Object.entries(game.odds));
+for (const [team, odd] of Object.entries(game.odds)) {
+  console.log(
+    `Odd of ${team !== 'x' ? 'victory' : 'draw'} ${game[team] ?? ''}: ${odd}`,
+  );
+}

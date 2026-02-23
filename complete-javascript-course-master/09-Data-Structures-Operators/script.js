@@ -143,7 +143,7 @@ console.log({ a, b });
 
 // Nested object
 const {
-  fri: { open: fridayOpeningHours, close: fridayClosingHours },
+  Fri: { open: fridayOpeningHours, close: fridayClosingHours },
 } = openingHours;
 console.log({ fridayOpeningHours, fridayClosingHours });
 
@@ -291,3 +291,61 @@ for (const item of joinedMenu) {
 for (const [position, item] of joinedMenu.entries()) {
   console.log(`${position + 1}. ${item}`);
 }
+
+// === OPTIONAL CHAINING ===
+if (restaurant.openingHours && restaurant.openingHours.mon) {
+  console.log(restaurant.openingHours.mon.open);
+}
+
+// With optional chaining
+console.log(restaurant.openingHours.mon?.open);
+console.log(restaurant.openingHours?.mon?.open);
+
+// Example
+const days = ['Mon', 'Tue', 'Wed', ' Thu', 'Fri', 'Sat', 'Sun'];
+
+for (const day of days) {
+  const open = restaurant.openingHours[day]?.open ?? 'closed';
+  console.log(`On ${day}, we open at ${open}`);
+}
+
+// Methods
+console.log(
+  restaurant.order?.(0, 2) ?? 'Method order does not exist in restaurant',
+);
+console.log(
+  restaurant.orderRisotto?.(0, 1) ??
+    'Method orderRisotto does not exist in restaurant',
+);
+
+// Arrays
+const users = [{ name: 'Soni', email: 'sonisemail@gmail.com' }];
+console.log(users[0]?.name ?? 'Users array is empty');
+
+// Looping Objects: Object Keys, Values and Entries
+// Property NAMES
+const properties = Object.keys(openingHours);
+console.log({ properties });
+
+console.log(`We are open on ${properties.length} days`);
+
+let openStr = `We are open on ${properties.length} days: `;
+for (const day of Object.keys(openingHours)) {
+  console.log(day);
+  openStr += `${day}, `;
+}
+
+console.log({ openStr });
+
+// Property VALUES
+const values = Object.values(openingHours);
+console.log({ values }); // returns [{open, close}] for all 3 days
+
+// Entire object
+const objEntries = Object.entries(openingHours);
+console.log({ objEntries });
+
+for (const [key, { open, close }] of objEntries) {
+  console.log(`On ${key} we open at ${open} and close at ${close}.`);
+}
+
