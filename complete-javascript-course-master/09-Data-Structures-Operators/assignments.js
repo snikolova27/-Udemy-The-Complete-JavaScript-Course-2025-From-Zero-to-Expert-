@@ -390,5 +390,196 @@ for (const [index, value] of Object.values(
 }
 
 const entries2 = Object.entries(books[0].thirdParty.goodreads);
-console.log({entries})
-console.log({entries2})
+console.log({ entries });
+console.log({ entries2 });
+
+// ====== Sets ======
+
+// Get all keywords
+const allKeywords = [];
+
+for (const book of books) {
+  allKeywords.push(...book.keywords);
+}
+console.log({ allKeywords });
+
+// Get only unique keywords
+const uniqueKeywords = new Set(allKeywords);
+console.log(uniqueKeywords);
+
+// Add two words to the set
+uniqueKeywords.add('coding');
+uniqueKeywords.add('science');
+
+// Delete 'business' from the uniqueKeywords set.
+uniqueKeywords.delete('business');
+
+// Create an array out of the uniqueKeywords set, and assign it to the uniqueKeywordsArr variable.
+const uniqueKeywordsArr = [...uniqueKeywords];
+
+console.log({ uniqueKeywordsArr });
+// Delete all items from the uniqueKeywords set.
+uniqueKeywords.clear();
+
+// ====== Maps =======
+// Create a new book, but this time, as a Map. Assign it to the bookMap variable. Use this array as initial data:
+const bookMap = new Map([
+  ['title', 'Clean Code'],
+  ['author', 'Robert C. Martin'],
+]);
+
+// Set a new key in bookMap called pages, and assign it with a number 464.
+bookMap.set('pages', 464);
+
+// Get the title and author values from bookMap, and log to the console a string formatted like that: "${title} by ${author}".
+console.log(`${bookMap.get('title')} by ${bookMap.get('author')}`);
+
+// Get the size of bookMap, and log it to the console.
+console.log(bookMap.size);
+
+// Check if bookMap has the author key. and if so, log "The author of the book is known" to the console.
+if (bookMap.has('author')) console.log('The authour of the book is known.');
+
+// ======= Maps: Iteration ======
+
+//Convert the first book object from the books array into a Map, and assign it to a firstBookMap variable.
+const firstBookMap = new Map(Object.entries(books[0]));
+
+// Use the for-of loop to iterate over firstBookMap, and log to the console keys that have numbers as values.
+
+for (const [key, value] of firstBookMap) {
+  if (typeof value === 'number') console.log(key);
+}
+
+// ====  Working with Strings - Part 1 ====
+// Take the ISBN property of the first book from the books array, and log to the console characters at index 6, 4, 9 and 8. Use bracket notation to access individual characters.
+console.log(
+  books[0].ISBN[6],
+  books[0].ISBN[4],
+  books[0].ISBN[9],
+  books[0].ISBN[8],
+);
+
+// Below is the quote variable that stores a string. Find the index of the word 'chess', and log it to the console.
+const quote = 'A computer once beat me at chess, but it was no match for me at kick boxing';
+console.log(quote.indexOf('chess'))
+
+// Extract the word "boxing" from the same quote string, and log it to the console.
+console.log(quote.slice(quote.lastIndexOf(' ') + 1))
+
+/*
+Some authors are noted as "(Contributor)", for example "Julie Sussman (Contributor)".
+Create a function called isContributor that takes an author's name as an argument,
+and returns either true (if he's a contributor) of false (if he's not a contributor).
+The string "(Contributor)" is always the last part of the author's name string.
+*/
+
+const isContributor = (author) => {
+  //return author.slice(author.lastIndexOf(' ') + 1).includes('Contributor')
+  return author.lastIndexOf('(Contributor)') !== -1
+}
+
+console.log(isContributor('Julie Sussman (Contributor)'))
+console.log(isContributor('Robert Sedgewick'))
+// ====  Working with Strings - Part 2 ====
+
+/*
+Write a function called normalizeAuthorName that takes an author's name (string) as an argument,
+and returns the same string, but the first name and last name are capitalized,
+and the "(Contributor)" part is removed (if exists).
+
+You can be sure that the author's name always consists of two words separated by a space,
+and possibly ends with "(Contributor)".
+The string may also contain trailing spaces.
+*/
+
+const normalizeAuthorName = (author) => {
+  const [firstName, secondName, _] = author.trim().toLowerCase().split(' ')
+
+  const normalizeName = (name) => `${name[0].toUpperCase()}${name.slice(1)}`
+  return `${normalizeName(firstName)} ${normalizeName(secondName)}`
+}
+
+console.log(normalizeAuthorName('  JuliE sussMan (Contributor)'))
+console.log(normalizeAuthorName('  JuliE sussMan '))
+
+// Take the title of the second book (books[1]) from the books array, and replace the word "Programs" with "Software". 
+// Assign the new string to the newBookTitle variable.
+const newBookTitle = books[1].title.replace('Programs', 'Software')
+
+
+/*
+Write a function called logBookTheme that takes book's title (string), and logs to the console:
+
+"This book is about computers" if the title starts with the word "computer",
+
+"This book is about algorithms and data structures" if the title includes both the "algorithms" and "structures" words,
+
+and, "This book is about some systems, but definitely not about operating systems" if the title ends with the word "system" or "systems", but doesn't include the word "operating".
+*/
+
+const logBookTheme = (title) => {
+  const lowerCaseTitle = title.toLowerCase()
+
+  if(lowerCaseTitle.startsWith('computer')){
+    console.log("This book is about computers")
+  }else if(lowerCaseTitle.includes("algorithms") && lowerCaseTitle.includes("structures")){
+    console.log("This book is about algorithms and data structures")
+  }else if((lowerCaseTitle.endsWith("system") || lowerCaseTitle.endsWith("systems")) && !lowerCaseTitle.includes('operating')){
+    console.log("This book is about some systems, but definitely not about operating systems")
+  }
+}
+// ====  Working with Strings - Part 3 ====
+
+/*
+Below is the bookCategories variable that stores a string of categories. Each category is separated with a semicolon, for example, in a string "science;computing", 'science' and 'computing' are separate categories.
+
+Write a function called logBookCategories that takes a string of categories separated with semicolons, and logs each category to the console (as separate strings).
+*/
+
+const bookCategories = 'science;computing;computer science;algorithms;business;operating systems;networking;electronics';
+
+const logBookCategories = (categories) => {
+  const separated = categories.split(';')
+  for(s of separated){
+    console.log(s)
+  }
+}
+
+logBookCategories(bookCategories);
+
+/*
+Now, the opposite. Each book from the books array has the keywords property.
+
+Write a function called getKeywordsAsString that takes the books array as an argument, collects keywords from each book, removes duplicates, and then joins them to create a single string where keywords are separated by a semicolon.
+*/
+
+const getKeywordsAsString = (booksArr) => {
+  const keywords = []
+  for(const book of booksArr){
+    keywords.push(...book.keywords)
+  }
+
+  const keywordsSet = [...new Set(keywords)]
+  const keywordsString = keywordsSet.join(';')
+  return keywordsString
+}
+
+console.log(getKeywordsAsString(books))
+
+/*
+Below is the bookChapters array that contains inner arrays. Each inner array consists of a chapter's title, and the number of a page, for example, in ['The Basics', 14], 'The Basics' is the chapter's title, and 14 is the number of a page.
+
+Write a function called logBookChapters that takes an array of arrays (like bookChapters) as an argument, and logs each chapter's name to the console together with the page number. The page number should be separated from the chapter's name with underscores (take a look at the example below).
+
+Use the padEnd method.
+*/
+
+const bookChapters = [['The Basics', 14], ['Sorting', 254], ['Searching', 372], ['Graphs', 526], ['Strings', 706]];
+
+const logBookChapters = (bookChaptersArr) => {
+  for(const [title, pages] of bookChaptersArr){
+    console.log(title.padEnd(20,'_') + pages)
+  }
+}
+logBookChapters(bookChapters);

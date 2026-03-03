@@ -349,3 +349,294 @@ for (const [key, { open, close }] of objEntries) {
   console.log(`On ${key} we open at ${open} and close at ${close}.`);
 }
 
+// ===== SETS =====
+const ordersSet = new Set([
+  'Pasta',
+  'Pizza',
+  'Pizza',
+  'Risotto',
+  'Pasta',
+  'Pizza',
+]);
+console.log(ordersSet);
+
+console.log(new Set('Jonas'));
+
+console.log(ordersSet.size);
+console.log(ordersSet.has('Pizza'));
+console.log(ordersSet.has('Bread'));
+ordersSet.add('Garlic Bread');
+ordersSet.add('Garlic Bread');
+ordersSet.delete('Risotto');
+// ordersSet.clear();
+console.log(ordersSet);
+
+for (const order of ordersSet) console.log(order);
+
+// Example
+const staff = ['Waiter', 'Chef', 'Waiter', 'Manager', 'Chef', 'Waiter'];
+const staffUnique = [...new Set(staff)];
+console.log(staffUnique);
+
+console.log(
+  new Set(['Waiter', 'Chef', 'Waiter', 'Manager', 'Chef', 'Waiter']).size,
+);
+
+console.log(new Set('jonasschmedtmann').size);
+
+const commonFoods = italianFoods.intersection(mexicanFoods);
+console.log('Intersection:', commonFoods);
+console.log([...commonFoods]);
+
+const italianMexicanFusion = italianFoods.union(mexicanFoods);
+console.log('Union:', italianMexicanFusion);
+
+console.log([...new Set([...italianFoods, ...mexicanFoods])]);
+
+const uniqueItalianFoods = italianFoods.difference(mexicanFoods);
+console.log('Difference italian', uniqueItalianFoods);
+
+const uniqueMexicanFoods = mexicanFoods.difference(italianFoods);
+console.log('Difference mexican', uniqueMexicanFoods);
+
+const uniqueItalianAndMexicanFoods =
+  italianFoods.symmetricDifference(mexicanFoods);
+console.log(uniqueItalianAndMexicanFoods);
+
+console.log(italianFoods.isDisjointFrom(mexicanFoods));
+
+// ==== MAPS ====
+
+const rest = new Map();
+rest.set('name', 'Classico Italiano');
+rest.set(1, 'Firenze, Italy');
+console.log(rest.set(2, 'Lisbon, Portugal'));
+
+rest
+  .set('categories', ['Italian', 'Pizzeria', 'Vegetarian', 'Organic'])
+  .set('open', 11)
+  .set('close', 23)
+  .set(true, 'We are open :D')
+  .set(false, 'We are closed :(');
+
+console.log(rest.get('name'));
+console.log(rest.get(true));
+console.log(rest.get(1));
+
+const time = 8;
+console.log(rest.get(time > rest.get('open') && time < rest.get('close')));
+
+console.log(rest.has('categories'));
+rest.delete(2);
+// rest.clear();
+
+const arr3 = [1, 2];
+rest.set(arr3, 'Test');
+rest.set(document.querySelector('h1'), 'Heading');
+console.log(rest);
+console.log(rest.size);
+
+console.log(rest.get(arr3));
+
+// Maps: Iteration
+const question = new Map([
+  ['question', 'What is the best programming language in the world?'],
+  [1, 'C'],
+  [2, 'Java'],
+  [3, 'JavaScript'],
+  ['correct', 3],
+  [true, 'Correct 🎉'],
+  [false, 'Try again!'],
+]);
+console.log(question);
+
+// Convert object to map
+console.log(Object.entries(openingHours));
+const hoursMap = new Map(Object.entries(openingHours));
+console.log(hoursMap);
+
+// Quiz app
+console.log(question.get('question'));
+for (const [key, value] of question) {
+  if (typeof key === 'number') console.log(`Answer ${key}: ${value}`);
+}
+// const answer = Number(prompt('Your answer'));
+const answer = 3;
+console.log(answer);
+
+console.log(question.get(question.get('correct') === answer));
+
+// Convert map to array
+console.log([...question]);
+// console.log(question.entries());
+console.log([...question.keys()]);
+console.log([...question.values()]);
+
+// ==== STRINGS ====
+
+const airline = 'TAP Air Portugal';
+const plane = 'A320';
+
+console.log(plane[0]);
+console.log(plane[1]);
+console.log(plane[2]);
+console.log('B737'[0]);
+
+console.log(airline.length);
+console.log('B747'.length);
+
+console.log(airline.indexOf('r'));
+console.log(airline.lastIndexOf('r'));
+console.log(airline.indexOf('Portugal'));
+console.log(airline.indexOf('portugal'));
+
+// Starts at position 4 until the end
+console.log(airline.slice(4)); // -> AIR Portugal
+console.log(airline.slice(4, 7)); // -> AIR, the last index is not included
+
+console.log(airline.slice(0, airline.indexOf(' ')));
+console.log(airline.slice(airline.lastIndexOf(' ' + 1)));
+
+console.log(airline.slice(-2));
+console.log(airline.slice(1, -1));
+
+// B and E are middle seats
+const checkMiddleSeat = seat => {
+  const letter = seat.slice(-1);
+  if (letter === 'E' || letter === 'B') {
+    console.log('You got the middle seat :(');
+  } else {
+    console.log('You got lucky!');
+  }
+};
+
+checkMiddleSeat('11B');
+checkMiddleSeat('23C');
+checkMiddleSeat('3E');
+
+console.log(new String('jonas'));
+console.log(typeof new String('jonas'));
+console.log(typeof new String('jonas').slice(1));
+
+console.log(airline.toLowerCase());
+console.log(airline.toUpperCase());
+
+// Fix capitalization in name
+const fixPassengerName = passenger => {
+  const passengerLower = passenger.toLowerCase();
+  const passengerCorrect =
+    passengerLower[0].toUpperCase() + passengerLower.slice(1);
+  console.log(passengerCorrect);
+
+  return passengerCorrect;
+};
+fixPassengerName('jOnAS');
+
+// Comparing emails
+const email = 'hello@jonas.io';
+const loginEmail = '    Hello@Jonas.Io\n';
+
+const lowerEmail = loginEmail.toLowerCase();
+const trimmedEmail = lowerEmail.trim();
+console.log({ trimmedEmail });
+
+const normalizedEmail = loginEmail.toLowerCase().trim();
+console.log({ normalizedEmail });
+
+const compareEmails = (email, loginEmail) => {
+  const normalizedEmail = loginEmail.toLowerCase().trim();
+  return normalizedEmail === email;
+};
+
+// Replacing
+const priceGB = '288,97£';
+const priceUS = priceGB.replace('£', '$').replace(', ', '.');
+console.log({ priceUS });
+
+const announcement =
+  'All passengers come to boarding door 23. Boarding door 23!';
+// Replaces only the very first appearance of the string
+console.log(announcement.replace('door', 'gate'));
+// Replaces every appearance of the string
+console.log(announcement.replaceAll('door', 'gate'));
+// Replaces every appearance of the string with a Regex
+console.log(announcement.replace(/door/g, 'gate'));
+
+const plane2 = 'Airbus A320neo';
+console.log(plane2.includes('A320'));
+console.log(plane2.includes('Boeing'));
+console.log(plane2.startsWith('Air'));
+
+if (plane2.startsWith('Airbus') && plane2.endsWith('neo')) {
+  console.log('Part of the NEW Airbus family');
+}
+
+// Practice exercise
+const checkBaggage = items => {
+  const baggage = items.toLowerCase();
+  if (baggage.includes('knife') || baggage.includes('gun')) {
+    console.log('You are NOT allowed on board');
+  } else {
+    console.log('Welcome aboard!');
+  }
+};
+
+checkBaggage('I have a laptop, some food and a pocket Knife');
+checkBaggage('Socks and camera');
+checkBaggage('Got some snacks and a gun for protection');
+
+console.log('a+very+nice+string'.split('+'));
+console.log('Sonya Nikolova'.split(' '));
+
+const [firstName, lastName] = 'Sonya Nikolova'.split(' ');
+
+const newName = ['Ms.', firstName, lastName.toUpperCase()].join(' ');
+console.log({ newName });
+
+const capitalizeName = name => {
+  const nameSplit = name.toLowerCase().split(' ');
+  const namesUpper = [];
+
+  for (const n of nameSplit) {
+    //  namesUpper.push(n[0].toUpperCase() + n.slice(1))
+
+    namesUpper.push(n.replace(n[0], n[0].toUpperCase()));
+  }
+
+  console.log(namesUpper.join(' '));
+  return namesUpper.join(' ');
+};
+
+capitalizeName('jessica ann smith davis');
+capitalizeName('sonya nikolova');
+
+// Padding
+const message = 'Go to gate 23!';
+console.log(message.padStart(25, '+').padEnd(30, '+'));
+console.log('Sonya'.padStart(25, '+').padEnd(30, '+'));
+
+const maskCreditCard = number => {
+  const str = number + ''; // String(number)
+  // const originalLength = str.length
+  // const paddedString = last4Digits.padStart(originalLength, 'X')
+
+  const last4Digits = str.slice(-4);
+  const paddedString = last4Digits.padStart(str.length, 'X');
+
+  console.log({ paddedString });
+  return paddedString;
+};
+
+maskCreditCard(111111);
+maskCreditCard(8284739480242);
+maskCreditCard('383957578458020342');
+
+// Replace
+const message2 = 'Bad weather... All Departures Delayed... '
+console.log(message2.repeat(5))
+
+const planesInLine = (n) => {
+  console.log(`There are ${n} planes in line ${'🛩️'.repeat(n)}`)
+}
+planesInLine(5)
+planesInLine(13)
