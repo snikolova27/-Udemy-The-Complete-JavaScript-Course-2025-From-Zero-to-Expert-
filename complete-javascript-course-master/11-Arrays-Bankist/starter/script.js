@@ -77,7 +77,68 @@ const displayMovement = movements => {
   });
 };
 
+// const user = 'Steven Thomas Williams' // stw
+const generateUsername = user => {
+  return user
+    .toLowerCase()
+    .split(' ')
+    .map(word => word[0])
+    .join('');
+};
+
+const generateUsernamesForAccounts = accounts => {
+  return accounts.map(account => {
+    return { ...account, username: generateUsername(account.owner) };
+  });
+};
+
+const generateUsernamesInPlace = accounts => {
+  accounts.forEach(account => {
+    account.username = generateUsername(account.owner);
+  });
+};
+
+const calculateAndDisplayBalance = movements => {
+  const balance = movements.reduce((acc, curr) => acc + curr, 0);
+  labelBalance.textContent = `${balance}€`;
+};
+
+const calculateAndDisplaySummary = movements => {
+  const deposits = movements
+    .filter(mov => mov > 0)
+    .reduce((acc, curr) => acc + curr, 0);
+  const withdrawals = movements
+    .filter(mov => mov < 0)
+    .reduce((acc, curr) => acc + curr, 0);
+
+  const interest = movements
+    .filter(mov => mov > 0)
+    .map(deposit => (deposit * 1.2) / 100)
+    .filter((interest) => interest >= 1)
+    .reduce((acc, curr) => acc + curr, 0);
+
+  labelSumIn.textContent = `${deposits}`;
+  labelSumOut.textContent = `${Math.abs(withdrawals)}`;
+  labelSumInterest.textContent = `${interest}`;
+};
+
 displayMovement(account1.movements);
+generateUsernamesInPlace(accounts);
+calculateAndDisplayBalance(account1.movements);
+calculateAndDisplaySummary(account1.movements);
+
+const depositsForAccount1 = account1.movements.filter(mov => mov > 0);
+const withdrawalsForAccount1 = account1.movements.filter(mov => mov < 0);
+const balanceAccount1 = account1.movements.reduce(
+  (acc, current) => acc + current,
+  0,
+);
+
+// Get max value with reduce
+const maxValue = account1.movements.reduce(
+  (acc, curr) => (acc = curr > acc ? curr : acc),
+  account1.movements[0],
+);
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -94,14 +155,22 @@ const euroToUsd = 1.1;
 
 const eurosToUsdArr = movements.map(mov => mov * euroToUsd);
 
-const movementsDescriptions =  movements.map((move, idx, arr) => {
+const movementsDescriptions = movements.map((move, idx, arr) => {
   return (
     `Movement ${idx + 1}: ` +
     `You ${move > 0 ? 'deposited 🏧💰' : 'withdrew 🤑'} ${Math.abs(move)}`
   );
 });
 
-console.log({movementsDescriptions})
+console.log({ movementsDescriptions });
+
+// PIPELINE
+const totalDeposits = movements
+  .filter(mov => mov > 0)
+  .map(mov => mov * euroToUsd)
+  .reduce((acc, curr) => acc + curr, 0);
+console.log({ totalDeposits });
+
 /////////////////////////////////////////////////
 
 // ==== ARRAY METHODS =====
