@@ -35,6 +35,8 @@ const account4 = {
 
 const accounts = [account1, account2, account3, account4];
 
+generateUsernamesInPlace(accounts);
+
 // Elements
 const labelWelcome = document.querySelector('.welcome');
 const labelDate = document.querySelector('.date');
@@ -61,11 +63,13 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-const displayMovement = movements => {
+const displayMovements = (movements, sort = false) => {
   // Empty entire movements container
   containerMovements.innerHTML = '';
 
-  movements.forEach((move, idx) => {
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+
+  movs.forEach((move, idx) => {
     const type = move > 0 ? 'deposit' : 'withdrawal';
     const html = `<div class="movements__row">
           <div class="movements__type movements__type--${type}">${idx + 1} ${type}</div>
@@ -78,13 +82,13 @@ const displayMovement = movements => {
 };
 
 // const user = 'Steven Thomas Williams' // stw
-const generateUsername = user => {
+function generateUsername(user) {
   return user
     .toLowerCase()
     .split(' ')
     .map(word => word[0])
     .join('');
-};
+}
 
 const generateUsernamesForAccounts = accounts => {
   return accounts.map(account => {
@@ -92,29 +96,30 @@ const generateUsernamesForAccounts = accounts => {
   });
 };
 
-const generateUsernamesInPlace = accounts => {
+function generateUsernamesInPlace(accounts) {
   accounts.forEach(account => {
     account.username = generateUsername(account.owner);
   });
-};
+}
 
-const calculateAndDisplayBalance = movements => {
-  const balance = movements.reduce((acc, curr) => acc + curr, 0);
+const calculateAndDisplayBalance = account => {
+  const balance = account.movements.reduce((acc, curr) => acc + curr, 0);
   labelBalance.textContent = `${balance}€`;
+  account.balance = balance;
 };
 
-const calculateAndDisplaySummary = movements => {
-  const deposits = movements
+const calculateAndDisplaySummary = account => {
+  const deposits = account.movements
     .filter(mov => mov > 0)
     .reduce((acc, curr) => acc + curr, 0);
-  const withdrawals = movements
+  const withdrawals = account.movements
     .filter(mov => mov < 0)
     .reduce((acc, curr) => acc + curr, 0);
 
-  const interest = movements
+  const interest = account.movements
     .filter(mov => mov > 0)
-    .map(deposit => (deposit * 1.2) / 100)
-    .filter((interest) => interest >= 1)
+    .map(deposit => (deposit * account.interestRate) / 100)
+    .filter(interest => interest >= 1)
     .reduce((acc, curr) => acc + curr, 0);
 
   labelSumIn.textContent = `${deposits}`;
@@ -122,10 +127,129 @@ const calculateAndDisplaySummary = movements => {
   labelSumInterest.textContent = `${interest}`;
 };
 
-displayMovement(account1.movements);
-generateUsernamesInPlace(accounts);
-calculateAndDisplayBalance(account1.movements);
-calculateAndDisplaySummary(account1.movements);
+const displayAccountInformation = account => {
+  displayMovements(account.movements);
+  calculateAndDisplayBalance(account);
+  calculateAndDisplaySummary(account);
+};
+
+const handleLogout = () => {
+  currentAccount = undefined;
+  containerApp.style.opacity = 0;
+  labelWelcome.textContent = 'Log in to continue';
+};
+
+let currentAccount;
+
+const handleLogin = event => {
+  // Prevent form from submitting
+  event.preventDefault();
+
+  currentAccount = accounts.find(
+    acc =>
+      acc.username === inputLoginUsername.value &&
+      acc.pin === Number(inputLoginPin.value),
+  );
+
+  if (currentAccount) {
+    labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}!`;
+    containerApp.style.opacity = 1;
+    displayAccountInformation(currentAccount);
+  } else {
+    handleLogout();
+  }
+
+  // Clear input fields for login
+  inputLoginPin.value = inputLoginUsername.value = '';
+  inputLoginPin.blur();
+  inputLoginUsername.blur();
+};
+
+const handleTransfer = e => {
+  e.preventDefault();
+
+  const amount = Number(inputTransferAmount.value);
+  const receiver = accounts.find(acc => acc.username === inputTransferTo.value);
+
+  if (
+    amount > 0 &&
+    amount <= currentAccount.balance &&
+    receiver.username !== currentAccount.username
+  ) {
+    // Add a negative transaction to current account
+    currentAccount.movements.push(-amount);
+
+    receiver.movements.push(amount);
+    displayAccountInformation(currentAccount);
+  }
+
+  inputTransferAmount.value = inputTransferTo.value = '';
+  inputTransferAmount.blur();
+  inputTransferTo.blur();
+};
+
+const handleCloseAccount = e => {
+  e.preventDefault();
+
+  const clear = () => {
+    inputCloseUsername.value = inputClosePin.value = '';
+    inputClosePin.blur();
+    inputCloseUsername.blur();
+  };
+
+  if (!currentAccount) {
+    return;
+  }
+
+  if (
+    currentAccount.username !== inputCloseUsername.value ||
+    currentAccount.pin !== Number(inputClosePin.value)
+  ) {
+    clear();
+    return;
+  }
+
+  clear();
+
+  const idxOfCurrentAccount = accounts.findIndex(
+    acc =>
+      acc.username === currentAccount.username &&
+      acc.pin === currentAccount.pin,
+  );
+
+  if (idxOfCurrentAccount >= 0) {
+    accounts.splice(idxOfCurrentAccount, 1);
+    handleLogout();
+  }
+};
+
+const handleLoan = e => {
+  e.preventDefault();
+
+  const amount = Number(inputLoanAmount.value);
+
+  if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
+    currentAccount.movements.push(amount);
+    displayAccountInformation(currentAccount);
+  }
+
+  inputLoanAmount.value = '';
+  inputLoanAmount.blur();
+};
+
+let areMovementsSorted = false;
+const handleSortMovements = e => {
+  e.preventDefault();
+
+  displayMovements(currentAccount.movements, !areMovementsSorted);
+  areMovementsSorted = !areMovementsSorted;
+};
+
+btnLogin.addEventListener('click', handleLogin);
+btnTransfer.addEventListener('click', handleTransfer);
+btnClose.addEventListener('click', handleCloseAccount);
+btnLoan.addEventListener('click', handleLoan);
+btnSort.addEventListener('click', handleSortMovements);
 
 const depositsForAccount1 = account1.movements.filter(mov => mov > 0);
 const withdrawalsForAccount1 = account1.movements.filter(mov => mov < 0);
@@ -171,6 +295,68 @@ const totalDeposits = movements
   .reduce((acc, curr) => acc + curr, 0);
 console.log({ totalDeposits });
 
+const firstWithdrawal = movements.find(mov => mov < 0);
+const account = accounts.find(acc => acc.owner === 'Jessica Davis');
+
+const lastWithdrawal = movements.findLast(mov => mov < 0);
+const lastLargeMovementIndex = movements.findLastIndex(
+  mov => Math.abs(mov) > 1000,
+);
+console.log(
+  `Your latest large movement (> 1000) was ${movements.length - lastLargeMovementIndex - 1} movements ago`,
+);
+
+movements.some(mov => mov > 0);
+movements.every(mov => mov > 100);
+
+const arr = [
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 9],
+];
+console.log(arr.flat());
+
+const arrDeep = [[[1, 2], 3], [[4], 5, 6], 7, 8, 9];
+console.log(arrDeep.flat());
+console.log(arrDeep.flat(2));
+
+const accountMovements = accounts.map(acc => acc.movements);
+const allMovements = accountMovements.flat();
+const overallBalance = allMovements.reduce((acc, mov) => acc + mov, 0);
+
+const overallBalance2 = accounts
+  .flatMap(acc => acc.movements)
+  .reduce((acc, mov) => acc + mov, 0);
+
+const owners = ['Jonas', 'Zach', 'Adam', 'Martha'];
+console.log(owners.sort());
+console.log(owners);
+
+// sort sorts after converting to string and then sorts alphabetically
+//console.log(movements.sort())
+
+console.log(movements);
+// Ascending
+// return < 0, a,b
+// return > 0, b,a
+
+// movements.sort((a, b) => {
+//   if(a > b) return 1
+//   if(b > a) return -1
+// });
+
+movements.sort((a, b) => a - b);
+
+console.log(movements);
+
+// Descending
+// movements.sort((a, b) => {
+//   if (a > b) return -1;
+//   if (b > a) return 1;
+// });
+
+movements.sort((a, b) => b - a);
+console.log(movements);
 /////////////////////////////////////////////////
 
 // ==== ARRAY METHODS =====
