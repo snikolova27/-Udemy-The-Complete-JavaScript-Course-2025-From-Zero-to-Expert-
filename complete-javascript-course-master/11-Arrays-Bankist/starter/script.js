@@ -10,6 +10,7 @@ const account1 = {
   movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
   interestRate: 1.2, // %
   pin: 1111,
+  type: 'premium',
 };
 
 const account2 = {
@@ -17,6 +18,7 @@ const account2 = {
   movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
   interestRate: 1.5,
   pin: 2222,
+  type: 'standard',
 };
 
 const account3 = {
@@ -24,6 +26,7 @@ const account3 = {
   movements: [200, -200, 340, -300, -20, 50, 400, -460],
   interestRate: 0.7,
   pin: 3333,
+  type: 'premium',
 };
 
 const account4 = {
@@ -31,6 +34,7 @@ const account4 = {
   movements: [430, 1000, 700, 50, 90],
   interestRate: 1,
   pin: 4444,
+  type: 'basic',
 };
 
 const accounts = [account1, account2, account3, account4];
@@ -357,6 +361,7 @@ console.log(movements);
 
 movements.sort((a, b) => b - a);
 console.log(movements);
+
 /////////////////////////////////////////////////
 
 // ==== ARRAY METHODS =====
@@ -463,3 +468,133 @@ currenciesUnique.forEach((value, _, map) => {
 })
 
 */
+
+// ==== Array grouping ====
+const groupMovements = Object.groupBy(movements, movement =>
+  movement > 0 ? 'deposits' : 'withdrawals',
+);
+console.log({ groupMovements });
+
+const groupedByActivity = Object.groupBy(accounts, account => {
+  const movementCount = account.movements.length;
+
+  if (movementCount >= 8) return 'very active';
+  if (movementCount >= 4) return 'active';
+  if (movementCount >= 1) return 'moderate';
+  return 'inactive';
+});
+
+console.log({ groupedByActivity });
+
+// const groupedByType = Object.groupBy(accounts, account => account.type)
+const groupedByType = Object.groupBy(accounts, ({ type }) => type);
+
+console.log(groupedByType);
+
+// ==== Filling arrays ====
+const x = new Array(7);
+console.log(x); /// empty array with length 7
+// x.fill(1)
+x.fill(1, 3);
+x.fill(2, 0, 3);
+console.log(x);
+
+arr.fill(23, 2, 6);
+
+// Array.from
+const y = Array.from(
+  {
+    length: 7,
+  },
+  () => 1,
+);
+
+console.log(y);
+
+const z = Array.from({ length: 7 }, (_, idx) => idx + 1);
+console.log(z);
+
+labelBalance.addEventListener('click', () => {
+  const movementsUI = Array.from(
+    document.querySelectorAll('.movements__value'),
+    el => Number(el.textContent.replace('€', '')),
+  );
+
+  console.log({ movementsUI });
+
+  const movementsUi2 = [...document.querySelectorAll('.movements__value')].map(
+    el => Number(el.textContent.replace('€', '')),
+  );
+
+  console.log({ movementsUI2 });
+});
+
+// Destructive array methods
+const reversed = movements.slice().reverse();
+const reversed2 = movements.toReversed();
+
+// toSpliced(splice), toSorted(sort)
+
+// movements[1] = 2000
+const newMovements = movements.with(1, 2000);
+console.log({ newMovements });
+console.log({ movements });
+
+// === Array practice ====
+const totalDepositSum = accounts
+  .flatMap(acc => acc.movements)
+  .filter(mov => mov > 0)
+  .reduce((acc, curr) => acc + curr, 0);
+
+const numDeposits1000 = accounts
+  .flatMap(acc => acc.movements)
+  .filter(mov => mov >= 1000).length;
+
+const numDeposits1000WithReduce = accounts
+  .flatMap(acc => acc.movements)
+  .reduce((acc, curr) => (acc += curr >= 1000 ? 1 : 0), 0);
+
+console.log({ numDeposits1000 });
+console.log({ numDeposits1000WithReduce });
+
+const sums = accounts
+  .flatMap(acc => acc.movements)
+  .reduce(
+    (sums, curr) => {
+      // curr > 0 ? (sums.deposits += curr) : (sums.withdrawals += curr);
+      sums[curr > 0 ? 'deposits' : 'withdrawals'] += curr;
+      return sums;
+    },
+
+    {
+      deposits: 0,
+      withdrawals: 0,
+    },
+  );
+
+console.log({ sums });
+
+// This is a nice title => This Is a Nice Title
+const convertToTitleCase = title => {
+  const exceptions = ['a', 'an', 'the', 'but', 'or', 'in', 'on', 'with'];
+
+  const capitalize = str => str[0].toUpperCase() + str.slice(1);
+
+  return capitalize(
+    title
+      .toLowerCase()
+      .split(' ')
+      .map(word => {
+        if (exceptions.includes(word)) {
+          return word;
+        } else {
+          return capitalize(word);
+        }
+      })
+      .join(' '),
+  );
+};
+
+console.log(convertToTitleCase('This is a nice title'));
+console.log(convertToTitleCase('This is a LONG title but not too long'));
+console.log(convertToTitleCase('and here is another title with an EXAMPLE'));
