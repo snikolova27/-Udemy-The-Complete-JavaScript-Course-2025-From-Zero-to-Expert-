@@ -1,13 +1,25 @@
 'use strict';
+// Elements
 
-///////////////////////////////////////
-// Modal window
+const btnScrollTo = document.querySelector('.btn--scroll-to');
+const section1 = document.querySelector('#section--1');
 
 const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
 const btnCloseModal = document.querySelector('.btn--close-modal');
 const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
 
+const tabs = document.querySelectorAll('.operations__tab');
+const tabsContainer = document.querySelector('.operations__tab-container');
+const tabsContent = document.querySelectorAll('.operations__content');
+
+const nav = document.querySelector('.nav');
+const header = document.querySelector('.header');
+
+const allSections = document.querySelectorAll('.section');
+
+///////////////////////////////////////
+// Modal window
 const openModal = function (event) {
   event.preventDefault();
   modal.classList.remove('hidden');
@@ -30,9 +42,8 @@ document.addEventListener('keydown', function (e) {
   }
 });
 
-const btnScrollTo = document.querySelector('.btn--scroll-to');
-const section1 = document.querySelector('#section--1');
-
+///////////////////////////////
+// Button scrolling
 btnScrollTo.addEventListener('click', e => {
   const section1Coordinates = section1.getBoundingClientRect();
 
@@ -74,8 +85,199 @@ btnScrollTo.addEventListener('click', e => {
   */
 });
 
+///////////////////////////////
+// Page navigation using event delegation
+// 1. Add event listener to common parent element
+// 2. Determine where event originated from
+document.querySelector('.nav__links').addEventListener('click', function (e) {
+  e.preventDefault();
+
+  // Matching strategy
+  if (e.target.classList.contains('nav__link')) {
+    const id = e.target.getAttribute('href');
+    document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+  }
+});
+
+// Single event handler to multiple elements
+/*
+document.querySelectorAll('.nav__link').forEach(function (link) {
+  link.addEventListener('click', function (e) {
+    e.preventDefault();
+
+    // This will not work if we used an arrow function for the callback
+    const id = this.getAttribute('href');
+    document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+  });
+});
+*/
+
+///////////////////////////////
+//Tabbed component
+
+// using event delegation again
+tabsContainer.addEventListener('click', e => {
+  e.preventDefault();
+  // There are spans in the buttons, we only want to work with the buttons
+  const clicked = e.target.closest('.operations__tab');
+
+  // Clicking in between buttons
+  if (!clicked) return;
+
+  // Remove currently active
+  tabs.forEach(tab => tab.classList.remove('operations__tab--active'));
+  tabsContent.forEach(c => {
+    console.log({ c });
+    c.classList.remove('operations__content--active');
+  });
+
+  // Activate tab
+  clicked.classList.add('operations__tab--active');
+
+  // Activate content area
+  const contentArea = clicked.getAttribute('data-tab'); // could also use clicked.dataset.tab
+  document
+    .querySelector(`.operations__content--${contentArea}`)
+    .classList.add('operations__content--active');
+});
+
+// =======================
+// Menu fade animation
+const handleHover = function (event, opacity) {
+  //console.log(this, event.currentTarget);
+  if (event.target.classList.contains('nav__link')) {
+    const link = event.target;
+    // Each link is wrapped in nav__item, we need 2 levels of parents up
+    const siblings = link.closest('.nav').querySelectorAll('.nav__link');
+    const logo = link.closest('.nav').querySelector('img');
+
+    siblings.forEach(s => {
+      if (s !== link) {
+        s.style.opacity = opacity;
+      }
+    });
+    logo.style.opacity = opacity;
+  }
+};
+
+const handleHoverWithBind = function (event) {
+  console.log('HELOOO');
+  console.log(this, event.currentTarget);
+  if (event.target.classList.contains('nav__link')) {
+    const link = event.target;
+    // Each link is wrapped in nav__item, we need 2 levels of parents up
+    const siblings = link.closest('.nav').querySelectorAll('.nav__link');
+    const logo = link.closest('.nav').querySelector('img');
+
+    siblings.forEach(s => {
+      if (s !== link) {
+        s.style.opacity = this;
+      }
+    });
+    logo.style.opacity = this;
+  }
+};
+
+// mouseenter DOES NOT bubble and we need a bubbling one so we use mouseover
+// Option 1
+// nav.addEventListener('mouseover', function (e) {
+//   handleHover(e, 0.5);
+// });
+// mouseout is the opposite of mouseover
+// nav.addEventListener('mouseout', function (e) {
+//   handleHover(e, 1);
+// });
+
+// Option 2
+// Passing "argument" into handler
+nav.addEventListener('mouseover', handleHoverWithBind.bind(0.5));
+nav.addEventListener('mouseout', handleHoverWithBind.bind(1));
+
+// =======================
+// Sticky navigation
+const section1Coordinates = section1.getBoundingClientRect();
+
+/*
+// Bad for performance - scroll event fires too often
+window.addEventListener('scroll', function () {
+  console.log(window.scrollY);
+
+  if (window.scrollY > section1Coordinates.top) {
+    nav.classList.add('sticky');
+  } else {
+    nav.classList.remove('sticky');
+  }
+});
+*/
+
+// Intersection Observer API
+// Will be called each time the observed element is intersecting the root element
+// at the threshold that is defined
+const observerHandler = function (thresholdEntries, observer) {
+  thresholdEntries.forEach(entry => {
+    console.log(entry);
+  });
+};
+
+const observerOptions = {
+  root: null,
+  // threshold: 0.1,
+  threshold: [0, 0.2],
+};
+
+const observer = new IntersectionObserver(observerHandler, observerOptions);
+observer.observe(section1);
+
+const stickyNav = entries => {
+  const [entry] = entries;
+
+  if (!entry.isIntersecting) {
+    nav.classList.add('sticky');
+  } else {
+    nav.classList.remove('sticky');
+  }
+};
+
+const navHeight = nav.getBoundingClientRect().height;
+
+const headerObserver = new IntersectionObserver(stickyNav, {
+  root: null,
+  threshold: 0,
+  // 90 pixels = the height of the navigation
+  rootMargin: `-${navHeight}px`,
+});
+headerObserver.observe(header);
+
+// ==== Slide in sections ===
+const revealSection = (entries, observer) => {
+  // We need the for each loop so that when we are between sections
+  // and we refresh, the section below is still visible after the page reloads
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+
+    entry.target.classList.remove('section--hidden');
+    // Stop observing as we have already shown the section
+    observer.unobserve(entry.target);
+  });
+};
+
+const sectionObserver = new IntersectionObserver(revealSection, {
+  root: null,
+  threshold: 0.15,
+});
+
+allSections.forEach(section => {
+  section.classList.add('section--hidden');
+  sectionObserver.observe(section);
+});
+
+//
+// ============================
+// ============================
+// ============================
 // ===== LECTURES ====
 
+/*
 // === SELECTING ====
 // Selecting the whole document
 console.log(document.documentElement);
@@ -179,7 +381,81 @@ const alertH1 = e => {
 };
 h1.addEventListener('mouseenter', alertH1);
 
-setTimeout(() => h1.removeEventListener('mouseenter', alert1), 3000);
+setTimeout(() => h1.removeEventListener('mouseenter', alertH1), 3000);
 
 // Old-school way
 // h1.onmouseenter = alertH1
+
+const randomInt = (min, max) =>
+  Math.floor(Math.random() * (max - min + 1) + min);
+
+const randomColor = () =>
+  `rgb(${randomInt(0, 255)}, ${randomInt(0, 255)}, ${randomInt(0, 255)})`;
+
+document.querySelector('.nav__link').addEventListener('click', function (e) {
+  console.log('ello');
+  console.log(this);
+  this.style.backgroundColor = randomColor();
+  console.log('LINK'.e.target, e.currentTarget);
+
+  // Stop event propagation
+  // e.stopPropagation()
+});
+
+document.querySelector('.nav__links').addEventListener('click', function (e) {
+  this.style.backgroundColor = randomColor();
+  console.log('CONTAINER'.e.target, e.currentTarget);
+});
+
+document.querySelector('.nav').addEventListener(
+  'click',
+  function (e) {
+    this.style.backgroundColor = randomColor();
+    console.log('NAV'.e.target, e.currentTarget);
+  },
+  // listen to capturing events
+  //true,
+);
+
+
+// === DOM TRAVERSAL ===
+
+const h1 = document.querySelector('h1')
+
+// Going downwards: child
+console.log(h1.querySelectorAll('.highlight'))
+// Direct children
+console.log(h1.childNodes)
+console.log(h1.children) // HTML collection, updates live
+console.log(h1.firstChild)
+console.log(h1.firstElementChild)
+h1.firstElementChild.style.color = 'white'
+h1.lastElementChild.style.color = 'orangered'
+
+// Going upwards: parents
+console.log(h1.parentNode)
+console.log(h1.parentElement) // we are usually interested in this
+
+// Selecting the closest parent element with a specific class
+// Accepts same arguments as querySelector, e.g. class name, id
+h1.closest('.header').style.background = 'var(--gradient-secondary)'
+
+// if the closest matching element is the one we ar invoking this on, that element is returned
+h1.closest('h1').style.background = 'var(--gradient-primary)'
+// We can think of the closest method as the opposite of the querySelector methods 
+// as it searches for parents and not children
+
+
+// Selecting sideways: siblings
+console.log(h1.previousElementSibling)
+console.log(h1.nextElementSibling)
+
+// Get all the siblings
+console.log(h1.parentElement.children)
+const siblings = [...h1.parentElement.children]
+siblings.forEach((sib) => {
+  if (sib !== h1){
+    sib.style.transform = 'scale(0.5)'
+  }
+})
+*/
