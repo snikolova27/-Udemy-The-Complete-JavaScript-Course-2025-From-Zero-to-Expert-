@@ -18,6 +18,12 @@ const header = document.querySelector('.header');
 
 const allSections = document.querySelectorAll('.section');
 
+const slides = document.querySelectorAll('.slide');
+const slider = document.querySelector('.slider');
+const buttonLeftSlider = document.querySelector('.slider__btn--left');
+const buttonRightSlider = document.querySelector('.slider__btn--right');
+const dotContainer = document.querySelector('.dots');
+
 ///////////////////////////////////////
 // Modal window
 const openModal = function (event) {
@@ -127,7 +133,6 @@ tabsContainer.addEventListener('click', e => {
   // Remove currently active
   tabs.forEach(tab => tab.classList.remove('operations__tab--active'));
   tabsContent.forEach(c => {
-    console.log({ c });
     c.classList.remove('operations__content--active');
   });
 
@@ -161,8 +166,6 @@ const handleHover = function (event, opacity) {
 };
 
 const handleHoverWithBind = function (event) {
-  console.log('HELOOO');
-  console.log(this, event.currentTarget);
   if (event.target.classList.contains('nav__link')) {
     const link = event.target;
     // Each link is wrapped in nav__item, we need 2 levels of parents up
@@ -210,7 +213,7 @@ window.addEventListener('scroll', function () {
 });
 */
 
-// Intersection Observer API
+// ==== Intersection Observer API ====
 // Will be called each time the observed element is intersecting the root element
 // at the threshold that is defined
 const observerHandler = function (thresholdEntries, observer) {
@@ -270,6 +273,125 @@ allSections.forEach(section => {
   section.classList.add('section--hidden');
   sectionObserver.observe(section);
 });
+
+// ===== Lazy loading images =====
+const imgTargets = document.querySelectorAll('img[data-src]');
+
+const loadImg = function (entries, observer) {
+  const [entry] = entries;
+
+  if (!entry.isIntersecting) return;
+
+  // Replace src with data-src
+  entry.target.src = entry.target.dataset.src;
+
+  entry.target.addEventListener('load', function () {
+    entry.target.classList.remove('lazy-img');
+  });
+
+  observer.unobserve(entry.target);
+};
+
+const imgObserver = new IntersectionObserver(loadImg, {
+  root: null,
+  threshold: 0,
+  rootMargin: '200px',
+});
+
+imgTargets.forEach(img => imgObserver.observe(img));
+
+// ===== Slider component =====
+const sliderComponent = () => {
+  const createDots = () => {
+    slides.forEach((_, i) => {
+      dotContainer.insertAdjacentHTML(
+        'beforeend',
+        `<button class="dots__dot" data-slide="${i}"></button>`,
+      );
+    });
+  };
+
+  const activateDot = slide => {
+    document
+      .querySelectorAll('.dots__dot')
+      .forEach(dot => dot.classList.remove('dots__dot--active'));
+
+    document
+      .querySelector(`.dots__dot[data-slide="${slide}"]`)
+      .classList.add('dots__dot--active');
+  };
+
+  let currentSlide = 0;
+  const maxSlide = slides.length;
+
+  const goToSlide = slide => {
+    slides.forEach(
+      (s, i) => (s.style.transform = `translateX(${(i - slide) * 100}%)`),
+    );
+    activateDot(slide);
+  };
+
+  const nextSlide = () => {
+    if (currentSlide === maxSlide - 1) {
+      currentSlide = 0;
+    } else {
+      currentSlide++;
+    }
+
+    goToSlide(currentSlide);
+  };
+
+  const previousSlide = () => {
+    if (currentSlide === 0) {
+      currentSlide = maxSlide - 1;
+    } else {
+      currentSlide--;
+    }
+
+    goToSlide(currentSlide);
+  };
+
+  const initSlider = () => {
+    createDots();
+    goToSlide(0);
+  };
+  initSlider();
+
+  buttonRightSlider.addEventListener('click', nextSlide);
+  buttonLeftSlider.addEventListener('click', previousSlide);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft') {
+      previousSlide();
+    } else if (e.key === 'ArrowRight') {
+      nextSlide();
+    }
+  });
+
+  dotContainer.addEventListener('click', event => {
+    if (event.target.classList.contains('dots__dot')) {
+      currentSlide = Number(event.target.dataset.slide);
+      goToSlide(currentSlide);
+    }
+  });
+};
+
+sliderComponent();
+
+document.addEventListener('DOMContentLoaded', e => {
+  console.log('HTML parsed and DOM tree built!', e);
+});
+
+window.addEventListener('load', e => {
+  console.log('Page fully loaded', e);
+});
+
+// Add pop up to ask user if they really want to leave the page
+window.addEventListener('beforeunload', function (e) {
+  e.preventDefault();
+  console.log(e);
+  e.returnValue = '';
+});
+
 
 //
 // ============================
