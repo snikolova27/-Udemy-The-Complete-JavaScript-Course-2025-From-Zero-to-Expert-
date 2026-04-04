@@ -31,8 +31,90 @@
   </head>
   <body>
     <div class="sidebar">
-      <img src="logo.png" alt="Logo" class="logo" />
+      <div class="toast hidden" id="success-toast">
+        <h2>Workout added successfully!</h2>
+        <button class="close_toast" id="success-toast-close-btn">
+          &times;
+        </button>
+      </div>
+      <div class="toast hidden" id="deletion-toast">
+        <h2>Workout deleted successfully!</h2>
+        <button class="close_toast" id="deletion-toast-close-btn">
+          &times;
+        </button>
+      </div>
 
+      <div
+        class="toast hidden all_will_be_deleted_toast"
+        id="all-deleted-toast"
+      >
+        <h2>All workouts will be deleted. The page will refresh.</h2>
+        <button class="close_toast" id="all-deleted-toast-close-btn">
+          &times;
+        </button>
+      </div>
+      <div class="toast hidden input_error_toast" id="input-error-toast">
+        <h2>Error creating workout. All numbers should be positive.</h2>
+        <button class="close_toast" id="input-error-toast-close-btn">
+          &times;
+        </button>
+      </div>
+      <div class="modal hidden" id="delete-all-workouts-modal">
+        <button class="close_modal" id="delete-all-workouts-modal-close">
+          &times;
+        </button>
+        <h1>Are you sure you want to delete all workout data?</h1>
+        <div class="modal_btn_container">
+          <button
+            class="overview__buttons modal__cancel_btn"
+            id="modal-cancel-btn"
+          >
+            Cancel
+          </button>
+          <button
+            class="overview__buttons delete_confirm_btn"
+            id="modal-confirm-btn"
+          >
+            Yes
+          </button>
+        </div>
+      </div>
+
+      <div class="modal hidden" id="delete-workout-modal">
+        <button class="close_modal" id="delete-workout-modal-close">
+          &times;
+        </button>
+        <h1>Are you sure you want to delete workout data?</h1>
+        <div class="modal_btn_container">
+          <button
+            class="overview__buttons modal__cancel_btn"
+            id="workout-modal-cancel-btn"
+          >
+            Cancel
+          </button>
+          <button
+            class="overview__buttons delete_confirm_btn"
+            id="workout-modal-confirm-btn"
+          >
+            Yes
+          </button>
+        </div>
+      </div>
+      <img src="logo.png" alt="Logo" class="logo" />
+      <div class="overview__container hidden">
+        <button
+          class="delete__all__workouts__button overview__buttons"
+          id="delete-all-workouts-btn"
+        >
+          🗑️ Delete all workouts
+        </button>
+        <button
+          class="sort__all__workouts__button overview__buttons"
+          id="sort-workouts-btn"
+        >
+          ↑ Sort by distance
+        </button>
+      </div>
       <ul class="workouts">
         <form class="form hidden">
           <div class="form__row">

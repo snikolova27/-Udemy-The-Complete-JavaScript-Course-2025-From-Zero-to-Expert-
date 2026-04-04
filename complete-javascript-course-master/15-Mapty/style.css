@@ -1,12 +1,18 @@
 :root {
   --color-brand--1: #ffb545;
   --color-brand--2: #00c46a;
+  --color-brand-3: #006336;
 
   --color-dark--1: #2d3439;
   --color-dark--2: #42484d;
   --color-light--1: #aaa;
   --color-light--2: #ececec;
   --color-light--3: rgb(214, 222, 224);
+  --color-delete-button: rgb(70, 5, 18);
+  --color-sort-button: rgb(2, 16, 96);
+  --color-edit-button: #987d06;
+  --color-warning: #dc8102;
+  --color-modal-background: rgb(13 20 27);
 }
 
 * {
@@ -125,7 +131,9 @@ a:visited {
 
   /* Match height and activity boxes */
   height: 9.25rem;
-  transition: all 0.5s, transform 1ms;
+  transition:
+    all 0.5s,
+    transform 1ms;
 }
 
 .form.hidden {
@@ -217,4 +225,146 @@ a:visited {
 }
 .cycling-popup .leaflet-popup-content-wrapper {
   border-left: 5px solid var(--color-brand--1);
+}
+
+button {
+  font-family: 'Manrope', sans-serif;
+  padding: 1rem 2rem;
+  border-radius: 8rem;
+  border: none;
+  cursor: pointer;
+}
+
+.overview__container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  padding-bottom: 12px;
+}
+
+.overview__container.hidden {
+  transform: translateY(-30rem);
+  height: 0;
+  padding: 0 2.25rem;
+  margin-bottom: 0;
+  opacity: 0;
+}
+
+.overview__buttons {
+  font-weight: bold;
+  font-size: medium;
+}
+
+.delete__all__workouts__button {
+  background-color: var(--color-delete-button);
+  color: white;
+}
+
+.sort__all__workouts__button {
+  background-color: var(--color-sort-button);
+  color: white;
+}
+
+.workout__button {
+  width: 120px;
+  height: 36px;
+  font-weight: bold;
+  color: white;
+}
+
+.edit__btn {
+  background-color: var(--color-edit-button);
+}
+
+.delete__btn {
+  background-color: var(--color-delete-button);
+}
+
+.delete_confirm_btn {
+  background-color: var(--color-warning);
+}
+
+/* Modal related classes */
+.modal {
+  position: absolute;
+  top: 45%;
+  left: 20%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  color: white;
+  background-color: var(--color-modal-background);
+  padding: 6rem;
+  border-radius: 5px;
+  box-shadow: 7px 1rem 4rem 0px var(--color-warning);
+  z-index: 10;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.close_modal {
+  position: absolute;
+  top: 1.2rem;
+  right: 2rem;
+  font-size: 5rem;
+  color: #333;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+.modal_btn_container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  padding-top: 16px;
+}
+
+.modal__cancel_btn {
+  background-color: white;
+}
+
+/* Toast related classes */
+.toast {
+  position: absolute;
+  top: 10%;
+  left: 20%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  color: white;
+  background-color: var(--color-brand-3);
+  padding: 1.6rem;
+  border-radius: 5px;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  align-items: center;
+  transition: all 0.4s ease-out; /* This enables the animation */
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.toast.hidden {
+  display: grid; /* Keep the grid layout so it doesn't break */
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, -80%); /* Starts slightly higher up */
+  pointer-events: none; /* Prevents clicking it while invisible */
+}
+
+.close_toast {
+  font-size: 3rem;
+  color: white;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+.all_will_be_deleted_toast {
+  background-color: var(--color-warning);
+}
+
+.input_error_toast {
+  background-color: var(--color-delete-button);
 }
