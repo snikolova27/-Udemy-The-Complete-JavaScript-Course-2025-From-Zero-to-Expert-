@@ -329,7 +329,8 @@ button {
 .toast {
   position: absolute;
   top: 10%;
-  left: 20%;
+  left: 2
+  0%;
   transform: translate(-50%, -50%);
   width: 300px;
   color: white;

@@ -61,6 +61,8 @@ const handleResponse = (url, errorMessage = '') => {
 };
 
 const getCountryAndNeighbourDataWithErrorHandling = function (country) {
+  countriesContainer.innerHTML = '';
+
   handleResponse(
     `https://restcountries.com/v2/name/${country}`,
     'Country not found',
